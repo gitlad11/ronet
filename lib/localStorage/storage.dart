@@ -1,5 +1,6 @@
 
-import 'dart:io' show Directory, File, Platform;
+import 'dart:io' show Directory, File, FileMode, Platform;
+import 'dart:convert';
 import 'package:excel/excel.dart';
 
 
@@ -27,15 +28,37 @@ Future read_data(name) async {
   return rows;
 }
 
-void write_data(object) async {
-
-}
-
-
-
-void main() async {
-  var exists = await File(current_directory + sub_directories + "path.json").exists();
+Future write_data(String file,  data) async {
+  var f = File(current_directory + sub_directories + file);
+  var exists = await f.exists();
   if(!exists){
-    create_database("path.json");
+    create_database(file);
+  }
+  if(f.path.endsWith("json")){
+    String json_string = await f.readAsString();
+    Map json_map = await json.decode(json_string);
+    print(json_map);
+
+  } else if (data is String){
+    List lines = await f.readAsLines();
+
+    if(lines.length > 2){
+      if(lines.last != data){
+        lines.add(data.trim());
+      }
+    } else if(lines.length == 1){
+      if(lines[0] != data){
+        lines.add(data.trim());
+      }
+    } else {
+      lines.add(data.trim());
+    }
+    f.openWrite().write('');
+    for(var line in lines){
+      f.writeAsStringSync('$line\n', mode: FileMode.append);
+    }
   }
 }
+
+
+

@@ -9,7 +9,8 @@ import 'package:ronet_engine/start.dart';
 import 'components/input.dart';
 import 'package:ronet_engine/components/search_modal.dart';
 import 'package:ronet_engine/handlers/search_directory.dart';
-import 'package:ronet_engine/handlers/search_directory.dart';
+import 'package:ronet_engine/editor.dart';
+import "package:ronet_engine/localStorage/storage.dart";
 
 class Folder_view extends StatefulWidget{
   List disk_list = [];
@@ -128,6 +129,11 @@ class Folder_view_state extends State<Folder_view>{
     });
   }
 
+  on_open() async {
+    await write_data("history.txt", controller.text);
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Editor()));
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
@@ -213,7 +219,7 @@ class Folder_view_state extends State<Folder_view>{
                   ]
                 ),
                 const SizedBox(height: 10),
-                RoundedButton(text: "Открыть", color: Colors.blueAccent, press: (){})
+                RoundedButton(text: "Открыть", color: Colors.blueAccent, press: on_open)
               ],
             ),
           ),

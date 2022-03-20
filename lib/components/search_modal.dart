@@ -47,7 +47,7 @@ class Search_modal_state extends State<Search_modal>{
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(4.0),
-                    child: Expanded(child: Text(widget.items[index], overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.bodyMedium)),
+                    child: Text(widget.items[index], overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.bodyMedium),
                   )
               ),
             );
