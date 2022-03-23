@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:ronet_engine/providers/path_providers.dart';
 import 'package:ronet_engine/game.dart';
 import 'package:ronet_engine/create_project.dart';
+import 'package:ronet_engine/providers/folders_provider.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -19,7 +21,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => Path_provider())
+        ChangeNotifierProvider(create: (context) => Path_provider()),
+        ChangeNotifierProvider(create: (context) => Folders_provider())
       ],
       child: MaterialApp(
         theme: ThemeData(

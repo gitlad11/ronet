@@ -29,7 +29,6 @@ class Folder_state extends State<Folder> {
 
   init_items() async {
     List items = await get_directories(widget.path);
-    print(items);
     setState(() {
       widget.items = items;
     });
@@ -97,14 +96,13 @@ class Folder_state extends State<Folder> {
                 ),
                 Container(
                   width: 300,
-
                   alignment: Alignment.centerLeft,
-                  child: widget.items.length > 0 ? ListView.builder(
+                  child: widget.items.isNotEmpty ? ListView.builder(
                     itemCount: widget.items.length,
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
                     itemBuilder: (BuildContext context, int index) {
-                      return Folder_item( resized: widget.resized, type: widget.items[index]['type'], name: widget.items[index]['name'], path: widget.items[index]['path'], empty: widget.items[index]['empty'] );
+                      return Folder_item(resized: widget.resized, type: widget.items[index]['type'], name: widget.items[index]['name'], path: widget.items[index]['path'], empty: widget.items[index]['empty'] );
                     },
                   ) : const SizedBox(),
                 ),
