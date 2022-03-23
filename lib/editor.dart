@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ronet_engine/components/navbar.dart';
 import 'package:ronet_engine/components/folders.dart';
+import 'package:ronet_engine/components/components.dart';
 
 class Editor extends StatefulWidget{
   @override
@@ -18,8 +19,10 @@ class Editor_state extends State<Editor>{
               children: [
                 Navbar(),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Folders(),
+                    Components(),
 
                   ],
                 )

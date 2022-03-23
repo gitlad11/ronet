@@ -1,9 +1,14 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ronet_engine/components/start_card.dart';
+import 'package:ronet_engine/create_project.dart';
+import 'package:ronet_engine/editor.dart';
 import 'package:ronet_engine/folder_view.dart';
 import 'package:ronet_engine/localStorage/storage.dart';
+import 'package:ronet_engine/providers/path_providers.dart';
+
 
 class Start extends StatefulWidget{
   List items = [];
@@ -19,6 +24,10 @@ class _StartState extends State<Start> {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Folder_view() ));
   }
 
+  createProject(){
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Create_project() ));
+  }
+
   @override
   void initState() {
     super.initState();
@@ -30,6 +39,11 @@ class _StartState extends State<Start> {
     setState(() {
       widget.items = items;
     });
+  }
+
+  go_to(path) async {
+    await Provider.of<Path_provider>(context, listen: false).set_path(path);
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Editor() ));
   }
 
   @override
@@ -52,7 +66,7 @@ class _StartState extends State<Start> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Start_card(image: "assets/add-folder.png", label: "Создать проект", onClick : (){}),
+                Start_card(image: "assets/add-folder.png", label: "Создать проект", onClick : createProject),
                 const SizedBox(height: 20),
                 Start_card(image: "assets/folder.png", label: "Открыть проект", onClick: chooseProject)
               ],
@@ -79,7 +93,11 @@ class _StartState extends State<Start> {
                             child: SizedBox(
                                 height: 20,
                                 width: 300,
-                                child: Text(widget.items[index], overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge)
+                                child: GestureDetector(
+                                    onTap: (){
+                                      go_to(widget.items[index]);
+                                    },
+                                    child: Text(widget.items[index], overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.labelLarge))
                             ),
                           ),
                         );

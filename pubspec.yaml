@@ -31,8 +31,8 @@ dependencies:
     sdk: flutter
 
   excel: ^2.0.0-null-safety-3
-
-
+  provider: ^6.0.2
+  flame: ^1.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -69,6 +69,9 @@ flutter:
     - assets/full_folder.png
     - assets/document.png
     - assets/image_full.png
+    - assets/2d.png
+    - assets/3d.png
+    - assets/dart.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
