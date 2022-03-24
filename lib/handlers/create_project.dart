@@ -54,6 +54,8 @@ create_dart_project(Directory directory) async {
         var project = await Process.run("flutter create $name", [], runInShell: true);
         if(project.exitCode == 0){
 
+            init_project(name);
+
         } else {
           return { "success" : false, "message" : "Ошибка создания flutter проекта, для полной информации наберите команду flutter doctor -v" };
         }
@@ -71,4 +73,16 @@ create_dart_project(Directory directory) async {
   } else if(Platform.isLinux){
 
   }
+}
+
+init_project(name) async {
+  var new_directory = await Directory(name + r"\assets").create(recursive: false);
+  var pubsec = File(name + '/pubspec.yaml');
+  List<String> lines = await pubsec.readAsLines();
+  var rows = [];
+  for(var line in lines){
+    rows.add(line);
+  }
+  print(rows.contains("assets:"));
+  return rows;
 }
