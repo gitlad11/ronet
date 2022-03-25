@@ -9,17 +9,36 @@ import 'package:ronet_engine/create_project.dart';
 import 'package:ronet_engine/providers/folders_provider.dart';
 import 'package:ronet_engine/providers/size_provider.dart';
 import 'package:ronet_engine/providers/console_provider.dart';
+import 'package:ronet_engine/game_engine/splash.dart';
+import 'package:window_manager/window_manager.dart';
+import 'package:ronet_engine/game_engine/game_state.dart';
 
-void main() {
-  runApp(MyApp());
+
+
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
+
+  // Use it only after calling `hiddenWindowAtLaunch`
+  windowManager.waitUntilReadyToShow().then((_) async {
+    await windowManager.setTitleBarStyle('hidden');
+    await windowManager.setBackgroundColor(Colors.transparent);
+    await windowManager.setSize(const Size(900, 600));
+    await windowManager.center();
+    await windowManager.show();
+    await windowManager.focus();
+    ///await windowManager.setSkipTaskbar(false);
+  });
+  runApp(Game_state());
 }
 
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => Path_provider()),
