@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:ronet_engine/providers/folders_provider.dart';
 import 'package:ronet_engine/providers/path_providers.dart';
 import 'package:ronet_engine/handlers/get_directories.dart';
+import 'package:ronet_engine/providers/size_provider.dart';
 
 class Folders extends StatefulWidget{
   List items = [{"type" : "file", "name" : 'file.txt'}];
@@ -28,6 +29,7 @@ class Folders_state extends State<Folders> {
         resized = 101.0;
       });
     }
+    Provider.of<Size_provider>(context, listen: false).setSideWidth(size);
   }
 
   @override

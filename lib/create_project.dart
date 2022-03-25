@@ -1,15 +1,22 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ronet_engine/components/button.dart';
 import 'package:ronet_engine/components/create_card.dart';
 import 'package:ronet_engine/components/directories.dart';
 import 'package:ronet_engine/components/input.dart';
 import 'package:ronet_engine/components/search_modal.dart';
+import 'package:ronet_engine/editor.dart';
 import 'package:ronet_engine/handlers/get_directories.dart';
 import 'package:ronet_engine/handlers/get_disks.dart';
 import 'package:ronet_engine/handlers/search_directory.dart';
 import 'package:ronet_engine/folder_view.dart';
+import 'package:ronet_engine/providers/path_providers.dart';
 import 'package:ronet_engine/start.dart';
 import 'package:ronet_engine/handlers/create_project.dart';
+
+import 'localStorage/storage.dart';
 
 
 class Create_project extends StatefulWidget{
@@ -27,8 +34,11 @@ class Create_project_state extends State<Create_project>{
   bool show_search = false;
   bool searching = false;
   bool error = false;
+  bool loading = false;
+
   TextEditingController controller = TextEditingController();
   TextEditingController name_controller = TextEditingController();
+
   FocusNode focus = FocusNode();
 
   setItem(index){
@@ -139,12 +149,42 @@ class Create_project_state extends State<Create_project>{
 
   create() async {
     if(name_controller.text.length > 2 && controller.text.length > 2){
+      setState(() {
+        loading = true;
+      });
       var project = await create_project(controller.text, name_controller.text, chosenItem);
+      if(project['success'] == true){
+        var name = project["name"];
+        var flame = await Process.run("cd $name & flutter pub add flame" , [], runInShell: true);
+        var win_utils = await Process.run("cd $name & flutter pub add window_utils" , [], runInShell: true);
+        var channel = await Process.run("cd $name & flutter channel master" , [], runInShell: true);
+
+        late String p;
+        if(controller.text.trim().endsWith(r'\')){
+          p = controller.text.trim() + name_controller.text.trim();
+        } else if(controller.text.endsWith('/')){
+          String result = await removeLastCharacter(controller.text);
+          controller.text = result + r'\';
+          p = controller.text.trim() + name_controller.text.trim();
+        } else {
+          p = controller.text + r'\' + name_controller.text;
+        }
+
+        await write_data("history.txt", p );
+        await Provider.of<Path_provider>(context, listen: false).set_path(p);
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Editor()));
+
+      } else {
+        setState(() {
+          loading = false;
+        });
+      }
     } else {
       setState(() {
         error = true;
       });
     }
+
   }
 
   @override
@@ -167,135 +207,150 @@ class Create_project_state extends State<Create_project>{
         ),
         title: const Text("Создать проект", style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.w500)),
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Container(
-            width: 1000,
-            height: 910,
-            padding: const EdgeInsets.all(6),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-
-                Container(
-                  width: 900,
-                  height: 210,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Create_card(image: "assets/dart.png", name: "2d проект на языке dart", index: 0, chosenItem: chosenItem, choseItem: setItem),
-                      const SizedBox(width: 30),
-                      Create_card(image: "assets/2d.png", name: "2d проект", index: 1, chosenItem: chosenItem, choseItem: setItem),
-                      const SizedBox(width: 30),
-                      Create_card(image: "assets/3d.png", name: "3d проект", index: 2, chosenItem: chosenItem, choseItem: setItem),
-                    ],
-                  ),
-                ),
-                Container(
-                  width: 400,
-                  height: 40,
-                  padding: const EdgeInsets.only(top: 15),
-                  child: TextField(
-                    controller: name_controller,
-                    decoration: InputDecoration(
-                      hintText: "Название",
-                      hintStyle: TextStyle( color: error ? Colors.redAccent : Colors.white70 )
-                    ),
-                  ),
-                ),
-                Stack(
+      body: Stack(
+        children: [
+          Center(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Container(
+                width: 1000,
+                height: 910,
+                padding: const EdgeInsets.all(6),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                      width: 600,
 
-                      alignment: Alignment.center,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                    Container(
+                      width: 900,
+                      height: 210,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const SizedBox(height: 20),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              child: Input("email",
-                                  const Icon(
-                                    Icons.folder,
-                                    color: Color(0xFFE5E3E8),
-                                    size: 22,
-                                  ),
-                                  controller,
-                                  focus,
-                                  return_to
-                              ),
-                              alignment: Alignment.center,
-                            ),
-                          ),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  alignment: Alignment.center,
-                                  height: 160,
-                                  width: 100,
-                                  padding: const EdgeInsets.only(left: 30),
-                                  child: widget.disk_list.isNotEmpty ? Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text("Диск:", style: Theme.of(context).textTheme.bodyLarge),
-                                      const SizedBox(height: 10),
-                                      ListView.builder(
-                                          shrinkWrap: true,
-                                          scrollDirection: Axis.vertical,
-                                          itemCount: widget.disk_list.length,
-                                          itemBuilder: (BuildContext context, int index) {
-                                            return Padding(
-                                              padding: const EdgeInsets.all(2.0),
-                                              child: MouseRegion(
-                                                  cursor: SystemMouseCursors.click,
-                                                  child: GestureDetector(
-                                                      onTap: (){ change_disk(widget.disk_list[index]); },
-                                                      child: Text(widget.disk_list[index], style: const TextStyle(color: Colors.blueAccent, fontSize: 17, fontWeight: FontWeight.w500))
-                                                  )
-                                              ),
-                                            );
-                                          }
-                                      )
-                                    ],
-                                  ) : const SizedBox(),
-                                ),
-                                Directories(items: widget.items, go_to_directory : go_to_directory )
-                              ]
-                          ),
-                          const SizedBox(height: 10),
-                          RoundedButton(text: "Создать", color: Colors.blueAccent, press: (){
-                            create();
-                          })
+                          Create_card(image: "assets/dart.png", name: "2d проект на языке dart", index: 0, chosenItem: chosenItem, choseItem: setItem),
+                          const SizedBox(width: 30),
+                          Create_card(image: "assets/2d.png", name: "2d проект", index: 1, chosenItem: chosenItem, choseItem: setItem),
+                          const SizedBox(width: 30),
+                          Create_card(image: "assets/3d.png", name: "3d проект", index: 2, chosenItem: chosenItem, choseItem: setItem),
                         ],
                       ),
                     ),
-                    show_search ? Positioned(
-                        top: 103,
-                        child: GestureDetector(
-                          onTap: (){ hide_search(); },
-                          child: Container(
-                            height: MediaQuery.of(context).size.height,
-                            width: MediaQuery.of(context).size.width,
-                            color: Colors.black.withOpacity(0),
+                    Container(
+                      width: 400,
+                      height: 40,
+                      padding: const EdgeInsets.only(top: 15),
+                      child: TextField(
+                        controller: name_controller,
+                        decoration: InputDecoration(
+                          hintText: "Название",
+                          hintStyle: TextStyle( color: error ? Colors.redAccent : Colors.white70 )
+                        ),
+                      ),
+                    ),
+                    Stack(
+                      children: [
+                        Container(
+                          width: 600,
+
+                          alignment: Alignment.center,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const SizedBox(height: 20),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  child: Input("email",
+                                      const Icon(
+                                        Icons.folder,
+                                        color: Color(0xFFE5E3E8),
+                                        size: 22,
+                                      ),
+                                      controller,
+                                      focus,
+                                      return_to
+                                  ),
+                                  alignment: Alignment.center,
+                                ),
+                              ),
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      alignment: Alignment.center,
+                                      height: 160,
+                                      width: 100,
+                                      padding: const EdgeInsets.only(left: 30),
+                                      child: widget.disk_list.isNotEmpty ? Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text("Диск:", style: Theme.of(context).textTheme.bodyLarge),
+                                          const SizedBox(height: 10),
+                                          ListView.builder(
+                                              shrinkWrap: true,
+                                              scrollDirection: Axis.vertical,
+                                              itemCount: widget.disk_list.length,
+                                              itemBuilder: (BuildContext context, int index) {
+                                                return Padding(
+                                                  padding: const EdgeInsets.all(2.0),
+                                                  child: MouseRegion(
+                                                      cursor: SystemMouseCursors.click,
+                                                      child: GestureDetector(
+                                                          onTap: (){ change_disk(widget.disk_list[index]); },
+                                                          child: Text(widget.disk_list[index], style: const TextStyle(color: Colors.blueAccent, fontSize: 17, fontWeight: FontWeight.w500))
+                                                      )
+                                                  ),
+                                                );
+                                              }
+                                          )
+                                        ],
+                                      ) : const SizedBox(),
+                                    ),
+                                    Directories(items: widget.items, go_to_directory : go_to_directory )
+                                  ]
+                              ),
+                              const SizedBox(height: 10),
+                              RoundedButton(text: "Создать", color: Colors.blueAccent, press: (){
+                                create();
+                              })
+                            ],
                           ),
-                        )) : const SizedBox(),
-                    show_search ? Positioned(
-                        top: 102,
-                        left: 80,
-                        child: Search_modal( items : widget.search_items, go_to_directory : go_to_directory )
-                    ) : const SizedBox()
+                        ),
+                        show_search ? Positioned(
+                            top: 103,
+                            child: GestureDetector(
+                              onTap: (){ hide_search(); },
+                              child: Container(
+                                height: MediaQuery.of(context).size.height,
+                                width: MediaQuery.of(context).size.width,
+                                color: Colors.black.withOpacity(0),
+                              ),
+                            )) : const SizedBox(),
+                        show_search ? Positioned(
+                            top: 102,
+                            left: 80,
+                            child: Search_modal( items : widget.search_items, go_to_directory : go_to_directory )
+                        ) : const SizedBox()
+                      ],
+                    ),
                   ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
+          loading ? Positioned.fill(
+              child: Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              color: Colors.black12,
+              child: Center( child: SizedBox(
+                  height: 100,
+                  width: 100,
+                  child: CircularProgressIndicator( color: Theme.of(context).appBarTheme.backgroundColor, )),
+              ),
+          )) : const SizedBox()
+        ],
       ),
     );
   }

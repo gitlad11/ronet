@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
 
@@ -29,16 +30,18 @@ create_project(String path, String name, int type) async {
   }
   await project.create(recursive: false);
 
+  Map created = { "success" : false, };
+
   switch(type){
     case 0:
-      create_dart_project(project);
+      created = await create_dart_project(project);
       break;
     case 1:
       break;
     case 2:
       break;
   }
-
+  return created;
 }
 
 create_dart_project(Directory directory) async {
@@ -54,8 +57,12 @@ create_dart_project(Directory directory) async {
         var project = await Process.run("flutter create $name", [], runInShell: true);
         if(project.exitCode == 0){
 
-            init_project(name);
-
+            var created = await init_project(name);
+            if(!created){
+              return { "success" : false, "message" : "Ошибка установки зависимостей в файл pubsec.yaml" };
+            } else {
+              return { "success" : true, "message" : "", "name" : name };
+            }
         } else {
           return { "success" : false, "message" : "Ошибка создания flutter проекта, для полной информации наберите команду flutter doctor -v" };
         }
@@ -76,13 +83,35 @@ create_dart_project(Directory directory) async {
 }
 
 init_project(name) async {
-  var new_directory = await Directory(name + r"\assets").create(recursive: false);
+  var assets_folder = await Directory(name + r"\assets").create(recursive: false);
+  var components_folder = await Directory(name + r'\lib\components').create(recursive: false);
   var pubsec = File(name + '/pubspec.yaml');
-  List<String> lines = await pubsec.readAsLines();
-  var rows = [];
-  for(var line in lines){
-    rows.add(line);
+  try {
+    List<String> lines = await pubsec.readAsLines();
+    var rows = [];
+    for(var line in lines){
+      rows.add(line+ '\n');
+    }
+
+    int index = 0;
+    for(String string in rows){
+      if(string.contains("assets:")){
+        rows[index] = "  assets:\n";
+        rows[index + 1] = "      - assets/\n";
+      } else {
+        index++;
+      }
+    }
+    await write_file(pubsec, rows);
+    return true;
+  } catch(error) {
+    return false;
   }
-  print(rows.contains("assets:"));
-  return rows;
+}
+
+write_file(File file, List data) async {
+  file.openWrite().write('');
+  for(var line in data){
+    file.writeAsStringSync('$line', mode: FileMode.append);
+  }
 }
