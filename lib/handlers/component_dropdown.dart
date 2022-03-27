@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 class Component_dropdown extends StatefulWidget{
-  List items = ["Пустой элемент", "Box collider", "Камера", "Sprite анимация", "Звук", "Gif эффект", "Gif фон",];
+  List items;
   List icons = [Icons.question_mark, Icons.square_sharp, Icons.videocam_rounded, Icons.animation, Icons.surround_sound, Icons.gif, Icons.gif];
   List methods = [];
+
+  Component_dropdown({ this.icons = const [],  this.items = const [], this.methods = const [] });
 
   @override
   Component_dropdown_state createState() => Component_dropdown_state();
@@ -20,7 +22,7 @@ class Component_dropdown_state extends State<Component_dropdown>{
           itemBuilder: (BuildContext context, int index) {
 
         return TextButton(onPressed: (){}, child: Padding(
-          padding: const EdgeInsets.all(4.0),
+          padding: const EdgeInsets.all(8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

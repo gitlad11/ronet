@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
+import 'package:path/path.dart' as path;
+import 'package:provider/provider.dart';
+import 'package:ronet_engine/providers/status_provider.dart';
 
 Future<String> removeLastCharacter(String str) async {
   var result = null;
@@ -12,7 +15,8 @@ Future<String> removeLastCharacter(String str) async {
 }
 
 
-create_project(String path, String name, int type) async {
+create_project(String path, String name, int type, context) async {
+  await Provider.of<Status_provider>(context, listen: false).setStatus("Создание проекта");
   late String p;
   if(path.trim().endsWith(r'\')){
     p = path.trim() + name.trim();
@@ -34,7 +38,7 @@ create_project(String path, String name, int type) async {
 
   switch(type){
     case 0:
-      created = await create_dart_project(project);
+      created = await create_dart_project(project, context);
       break;
     case 1:
       break;
@@ -44,7 +48,8 @@ create_project(String path, String name, int type) async {
   return created;
 }
 
-create_dart_project(Directory directory) async {
+create_dart_project(Directory directory, context) async {
+  Provider.of<Status_provider>(context, listen: false).setStatus("Инициализация Dart проекта");
   if(Platform.isWindows){
     var project = await Process.run("where flutter", [], runInShell: true);
     var result = project.stdout.toString().split(r'\');
@@ -53,11 +58,12 @@ create_dart_project(Directory directory) async {
       var path = project.stdout.toString().split(disk);
       var enabled = await Process.run("flutter", [], runInShell: true);
       if(enabled.exitCode == 0){
+        await Provider.of<Status_provider>(context, listen: false).setStatus(r"Создание Flutter проекта в \flutter_project");
         var name = directory.path + r'\flutter_project';
         var project = await Process.run("flutter create $name", [], runInShell: true);
         if(project.exitCode == 0){
-
-            var created = await init_project(name);
+          await Provider.of<Status_provider>(context, listen: false).setStatus(r"Установка зависимостей окружения");
+            var created = await init_project(name, context);
             if(!created){
               return { "success" : false, "message" : "Ошибка установки зависимостей в файл pubsec.yaml" };
             } else {
@@ -82,9 +88,16 @@ create_dart_project(Directory directory) async {
   }
 }
 
-init_project(name) async {
+init_project(String name, context) async {
+
   var assets_folder = await Directory(name + r"\assets").create(recursive: false);
   var components_folder = await Directory(name + r'\lib\components').create(recursive: false);
+  var scenes_folder = await Directory(name + r'\lib\scenes').create(recursive: false);
+  var provider_folder = await Directory(name + r'\lib\providers').create(recursive: false);
+
+  await Provider.of<Status_provider>(context, listen: false).setStatus("Копирование игровой структуры в $name");
+  var init_engine = await init_game_engine(scenes_folder, provider_folder, name);
+
   var pubsec = File(name + '/pubspec.yaml');
   try {
     List<String> lines = await pubsec.readAsLines();
@@ -102,6 +115,7 @@ init_project(name) async {
         index++;
       }
     }
+    await Provider.of<Status_provider>(context, listen: false).setStatus("Настройка /assets директории");
     await write_file(pubsec, rows);
     return true;
   } catch(error) {
@@ -114,4 +128,47 @@ write_file(File file, List data) async {
   for(var line in data){
     file.writeAsStringSync('$line', mode: FileMode.append);
   }
+}
+
+Future read_data(String name) async {
+  List<String> lines = await File(name).readAsLines();
+  var rows = [];
+  for(var line in lines){
+    rows.add(line + '\n');
+  }
+  return rows;
+}
+
+init_game_engine(Directory scenes_folder, Directory provider_folder, String name) async {
+  var game_engine = Directory(Directory.current.path + r'\lib\game_engine');
+try {
+  List game_state_data = await read_data(game_engine.path + r'\game_state.dart');
+  List provider_data = await read_data(game_engine.path + r'\providers\game_state_provider.dart');
+  List splash_data = await read_data(game_engine.path + r'\scenes\splash.dart');
+  List game_data = await read_data(game_engine.path + r'\scenes\game.dart');
+
+  File game_state_file = File(name + r'\lib\game_state.dart');
+  File provider_file = File(name + r'\lib\providers\game_state_provider.dart');
+  File splash_file = File(name + r'\lib\scenes\splash.dart');
+  File game_file = File(name + r'\lib\scenes\game.dart');
+
+  await game_state_file.create(recursive: false);
+  await provider_file.create(recursive: false);
+  await splash_file.create(recursive: false);
+  await game_file.create(recursive: false);
+
+  print(game_state_file.path);
+
+  await write_file(game_state_file, game_state_data);
+  await write_file(provider_file, provider_data);
+  await write_file(splash_file, splash_data);
+  await write_file(game_file, game_data);
+  } catch(error){
+  print(error);
+
+}
+}
+
+void main() async {
+  await init_game_engine(Directory(r"D:\dsada\lib\scenes"), Directory(r"D:\dsada\lib\provider"), r"D:\dsada");
 }

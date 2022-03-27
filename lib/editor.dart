@@ -93,7 +93,7 @@ class Editor_state extends State<Editor>{
                 dropdown == 4 ? Positioned(
                     right: 140,
                     top: 35,
-                    child: DropDown(methods: Component_dropdown())) : SizedBox(),
+                    child: DropDown(methods: Component_dropdown( items: ["Пустой элемент", "Box collider", "Камера", "Sprite анимация", "Звук", "Gif эффект", "Gif фон"], ))) : SizedBox(),
                 dropdown == 5 ? Positioned(
                     right: 10,
                     top: 35,

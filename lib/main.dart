@@ -9,10 +9,12 @@ import 'package:ronet_engine/create_project.dart';
 import 'package:ronet_engine/providers/folders_provider.dart';
 import 'package:ronet_engine/providers/size_provider.dart';
 import 'package:ronet_engine/providers/console_provider.dart';
-import 'package:ronet_engine/game_engine/splash.dart';
+import 'package:ronet_engine/providers/status_provider.dart';
+import 'package:ronet_engine/game_engine/scenes/splash.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:ronet_engine/game_engine/game_state.dart';
-
+import 'package:ronet_engine/providers/components_provider.dart';
+import 'package:ronet_engine/providers/scenes_provider.dart';
 
 
 
@@ -22,15 +24,15 @@ void main() async {
 
   // Use it only after calling `hiddenWindowAtLaunch`
   windowManager.waitUntilReadyToShow().then((_) async {
-    await windowManager.setTitleBarStyle('hidden');
+    ///await windowManager.setTitleBarStyle('hidden');
     await windowManager.setBackgroundColor(Colors.transparent);
     await windowManager.setSize(const Size(900, 600));
     await windowManager.center();
     await windowManager.show();
-    await windowManager.focus();
+    ///await windowManager.focus();
     ///await windowManager.setSkipTaskbar(false);
   });
-  runApp(Game_state());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -44,7 +46,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => Path_provider()),
         ChangeNotifierProvider(create: (context) => Folders_provider()),
         ChangeNotifierProvider(create: (context) => Size_provider()),
-        ChangeNotifierProvider(create: (context) => Console_provider())
+        ChangeNotifierProvider(create: (context) => Console_provider()),
+        ChangeNotifierProvider(create: (context) => Status_provider()),
+        ChangeNotifierProvider(create: (context) => Scenes_provider()),
+        ChangeNotifierProvider(create: (context) => Components_provider()),
       ],
       child: MaterialApp(
         theme: ThemeData(

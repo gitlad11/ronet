@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ronet_engine/components/component.dart';
 import 'package:ronet_engine/components/toolTip.dart';
 import 'package:ronet_engine/components/component_view.dart';
+import 'package:ronet_engine/handlers/get_scenes.dart';
+import 'package:ronet_engine/providers/components_provider.dart';
+import 'package:ronet_engine/providers/path_providers.dart';
+import 'package:ronet_engine/providers/scenes_provider.dart';
 
 class Components extends StatefulWidget{
   List items = [{ "name" : "Шейдеры" }];
@@ -18,11 +23,21 @@ class Components_state extends State<Components>{
 
   @override
   void initState() {
+    init_items();
     super.initState();
   }
   @override
   void dispose() {
     super.dispose();
+  }
+
+  init_items() async {
+    var path = Provider.of<Path_provider>(context, listen: false).path;
+    List scenes = await get_scenes(path + r'\flutter_project\lib\scenes\');
+    await Provider.of<Scenes_provider>(context, listen: false).set_scenes(scenes);
+    var scene = Provider.of<Scenes_provider>(context, listen: false).scenes[0];
+    List components = await get_components(scene);
+    await Provider.of<Components_provider>(context, listen: false).set_components(components);
   }
 
   @override

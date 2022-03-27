@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 stdin_console(command) async {
-  var result = await Process.run(command, [], runInShell: true, stdoutEncoding: utf8);
+  var result = await Process.run(command, [], runInShell: true);
   if(result.exitCode == 0){
     return result.stdout;
   } else {

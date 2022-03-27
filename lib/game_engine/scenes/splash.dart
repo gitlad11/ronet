@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:ronet_engine/game_engine/providers/game_state_provider.dart';
 
 class Splash extends StatefulWidget{
   late String image;
@@ -8,7 +10,12 @@ class Splash extends StatefulWidget{
   late bool show_status = false;
   late String loader_type;
   late Color loader_color;
-  Splash({ this.image = '', this.loader_image = '', this.loader_position = const [30.0, 30.0], this.loader_size = 30.0, this.loader_type = "circular", this.loader_color = Colors.redAccent });
+  late bool show_loader;
+  late Widget children;
+  late int show_time;
+  Splash({ this.image = '', this.loader_image = '', this.loader_position = const [30.0, 30.0],
+            this.loader_size = 30.0, this.loader_type = "circular", this.loader_color = Colors.redAccent,
+            this.show_loader = true, this.children = const SizedBox(), this.show_time = 6 });
 
   @override
   Splash_state createState() => Splash_state();
@@ -20,6 +27,7 @@ class Splash_state extends State<Splash>{
   @override
   void initState() {
     Future.delayed(const Duration(milliseconds: 200), handle_animate);
+    Future.delayed(Duration(seconds: widget.show_time), splash_end);
     super.initState();
   }
 
@@ -27,6 +35,11 @@ class Splash_state extends State<Splash>{
     setState(() {
       animate = !animate;
     });
+  }
+
+  splash_end() async {
+    await Future.delayed(const Duration(milliseconds: 700), handle_animate);
+    Provider.of<Game_state_provider>(context, listen: false).set_state(1);
   }
 
   @override
@@ -53,7 +66,8 @@ class Splash_state extends State<Splash>{
 
                     ),
                   )
-              )
+              ),
+              widget.children
             ],
           ),
         ),
