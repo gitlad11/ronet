@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class Component_dropdown extends StatefulWidget{
   List items;
-  List icons = [Icons.question_mark, Icons.square_sharp, Icons.videocam_rounded, Icons.animation, Icons.surround_sound, Icons.gif, Icons.gif];
+  List icons;
   List methods = [];
 
   Component_dropdown({ this.icons = const [],  this.items = const [], this.methods = const [] });
@@ -21,8 +23,10 @@ class Component_dropdown_state extends State<Component_dropdown>{
           shrinkWrap: true,
           itemBuilder: (BuildContext context, int index) {
 
-        return TextButton(onPressed: (){}, child: Padding(
-          padding: const EdgeInsets.all(8.0),
+        return TextButton(onPressed: (){
+          print(Directory.current.path);
+        }, child: Padding(
+          padding: const EdgeInsets.all(6.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

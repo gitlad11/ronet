@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ronet_engine/components/toolTip.dart';
 import 'package:ronet_engine/components/component_view_item.dart';
+import 'package:ronet_engine/handlers/get_scenes.dart';
 import 'package:ronet_engine/providers/components_provider.dart';
+import 'package:ronet_engine/providers/path_providers.dart';
 import 'package:ronet_engine/providers/scenes_provider.dart';
+import 'package:ronet_engine/handlers/edit.dart';
 
 class Component_view extends StatefulWidget{
-  List items = [{ "name" : "component1" }, { "name" : "component2" }, { "name" : "component3" }];
-  String name = 'name';
 
   @override
   Component_view_state createState() => Component_view_state();
@@ -16,16 +17,36 @@ class Component_view extends StatefulWidget{
 class Component_view_state extends State<Component_view>{
   bool rename = false;
   int toolTip = 999;
+  late TextEditingController controller;
 
   @override
   void initState() {
+    controller = TextEditingController();
     super.initState();
   }
   @override
   void dispose() {
+    controller.dispose();
     super.dispose();
   }
 
+  on_rename_scene() async {
+    if(controller.text.isNotEmpty){
+      var scene = Provider.of<Scenes_provider>(context, listen: false).current_scene;
+      var renamed = await rename_scene(scene, controller.text);
+      var project = Provider.of<Path_provider>(context, listen: false).path;
+      if(renamed){
+        var scenes = await get_scenes(project);
+        await Provider.of<Scenes_provider>(context, listen: false).set_scenes(scenes);
+        await Provider.of<Scenes_provider>(context, listen: false).set_current_scene(scenes[0]);
+        List components = await get_components(scenes[0]);
+        await Provider.of<Components_provider>(context, listen: false).set_components(components);
+      }
+      setState(() {
+        rename = !rename;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,17 +73,22 @@ class Component_view_state extends State<Component_view>{
                       rename ? Container(
                           height: 23,
                           width: 120,
-                          child: TextField( decoration: InputDecoration( hintText: widget.name ), )
-                      ) : Text("scene1", style: Theme.of(context).textTheme.labelMedium)
+                          child: TextField(
+
+                            decoration: InputDecoration( hintText: scenes_provider.current_scene['name'] ),
+                          )
+                      ) : Text(scenes_provider.current_scene['name'], style: Theme.of(context).textTheme.labelMedium)
                     ]),
                   ),
                   Positioned(
-                    right: 5,
-                    top: 5,
+                    right: 6,
+                    top: 6,
                     child: MouseRegion(
                       onEnter: (_){
                         setState(() {
-                          toolTip = 1;
+                          if(!rename){
+                            toolTip = 1;
+                          }
                         });
                       },
                       onExit: (_){
@@ -77,13 +103,13 @@ class Component_view_state extends State<Component_view>{
                             rename = !rename;
                           });
                         },
-                        child: const Icon(Icons.edit, color: Colors.white, size: 18),
+                        child: Icon(rename ? Icons.close : Icons.edit, color: Colors.white, size: 18),
                       ),
                     ),
                   ),
                   Positioned(
                       right: 20,
-                      top: 5,
+                      top: 6,
                       child: AnimatedOpacity(
                         duration: const Duration(milliseconds: 400),
                         opacity: toolTip == 1 ? 1 : 0,
@@ -91,10 +117,22 @@ class Component_view_state extends State<Component_view>{
                           label: "Переименовать",
                         ),
                       )
-                  )
+                  ),
+                  rename ? Positioned(
+                    top: 6,
+                    right: 26,
+                    child: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: GestureDetector(
+                        onTap: (){
+                          on_rename_scene();
+                        },
+                        child: const Icon(Icons.done, color: Colors.white, size: 18),
+                      ),
+                    ), ) : SizedBox(),
                 ],
               ),
-              widget.items.isNotEmpty ? Padding(
+              components_provider.components.isNotEmpty ? Padding(
                 padding: const EdgeInsets.only(top: 4.0),
                 child: SizedBox(
                   height: 250,

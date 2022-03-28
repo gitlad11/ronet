@@ -38,6 +38,7 @@ class Components_state extends State<Components>{
     var scene = Provider.of<Scenes_provider>(context, listen: false).scenes[0];
     List components = await get_components(scene);
     await Provider.of<Components_provider>(context, listen: false).set_components(components);
+    await Provider.of<Scenes_provider>(context, listen: false).set_current_scene(scene);
   }
 
   @override

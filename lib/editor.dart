@@ -6,6 +6,7 @@ import 'package:ronet_engine/components/components.dart';
 import 'package:ronet_engine/components/dropdown.dart';
 import 'package:ronet_engine/handlers/component_dropdown.dart';
 import 'package:ronet_engine/components/console.dart';
+import 'package:ronet_engine/handlers/scenes_dropdown.dart';
 import 'package:ronet_engine/providers/size_provider.dart';
 
 class Editor extends StatefulWidget{
@@ -81,7 +82,7 @@ class Editor_state extends State<Editor>{
                 dropdown == 1 ? Positioned(
                     left: 10,
                     top: 35,
-                    child: DropDown()) : SizedBox(),
+                    child: DropDown(methods: Component_dropdown(items: const [ "Новый проект", "Открыть проект"] ),)) : SizedBox(),
                 dropdown == 2 ? Positioned(
                     left: 140,
                     top: 35,
@@ -93,11 +94,14 @@ class Editor_state extends State<Editor>{
                 dropdown == 4 ? Positioned(
                     right: 140,
                     top: 35,
-                    child: DropDown(methods: Component_dropdown( items: ["Пустой элемент", "Box collider", "Камера", "Sprite анимация", "Звук", "Gif эффект", "Gif фон"], ))) : SizedBox(),
+                    child: DropDown(methods: Component_dropdown(
+                      items: const ["Пустой элемент", "Box collider", "Камера", "Sprite анимация", "Звук", "Gif эффект", "Gif фон", "Текст"],
+                      icons: const [Icons.question_mark, Icons.square_sharp, Icons.videocam_rounded, Icons.animation, Icons.surround_sound, Icons.gif, Icons.gif, Icons.text_format],
+                    ))) : SizedBox(),
                 dropdown == 5 ? Positioned(
                     right: 10,
                     top: 35,
-                    child: DropDown()) : SizedBox(),
+                    child: DropDown(methods: Scenes_dropdown())) : SizedBox(),
               ],
             ),
           );

@@ -9,7 +9,8 @@ Future<List> get_scenes(path) async {
     if(entity is File){
       if(entity.path.endsWith(".dart") || entity.path.endsWith('.cpp')){
         String name = entity.path.split(r'\').last;
-        var item = { "path" : entity.path, "name" : name };
+        String n = name.split('.').first;
+        var item = { "path" : entity.path, "name" : n };
         items.add(item);
       }
     }
@@ -23,14 +24,9 @@ Future<List> get_components(entity) async {
   for (String row in rows){
     if(row.contains("/components/")){
       String component = row.split(r'/').last;
-      components.add(component);
+      List comp = component.split(".");
+      components.add(comp[0]);
     }
   }
-  print(components);
   return components;
-}
-
-void main() async {
-  var scenes = await get_scenes(r"D:\ronet\lib\game_engine\scenes");
-  print(scenes);
 }

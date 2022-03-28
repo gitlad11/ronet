@@ -111,6 +111,7 @@ init_project(String name, context) async {
       if(string.contains("assets:")){
         rows[index] = "  assets:\n";
         rows[index + 1] = "      - assets/\n";
+        index++;
       } else {
         index++;
       }
