@@ -32,7 +32,7 @@ void main() async {
     ///await windowManager.focus();
     ///await windowManager.setSkipTaskbar(false);
   });
-  runApp(Game_state());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {

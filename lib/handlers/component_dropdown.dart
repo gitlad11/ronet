@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 class Component_dropdown extends StatefulWidget{
   List items;
   List icons;
-  List methods = [];
-
-  Component_dropdown({ this.icons = const [],  this.items = const [], this.methods = const [] });
+  var method;
+  Component_dropdown({ this.icons = const [],  this.items = const [], this.method });
 
   @override
   Component_dropdown_state createState() => Component_dropdown_state();
@@ -24,7 +23,7 @@ class Component_dropdown_state extends State<Component_dropdown>{
           itemBuilder: (BuildContext context, int index) {
 
         return TextButton(onPressed: (){
-          print(Directory.current.path);
+           widget.method(index);
         }, child: Padding(
           padding: const EdgeInsets.all(6.0),
           child: Row(

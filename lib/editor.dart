@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ronet_engine/components/navbar.dart';
 import 'package:ronet_engine/components/folders.dart';
+import 'package:ronet_engine/handlers/edit.dart';
 import 'package:ronet_engine/components/components.dart';
 import 'package:ronet_engine/components/dropdown.dart';
 import 'package:ronet_engine/handlers/component_dropdown.dart';
 import 'package:ronet_engine/components/console.dart';
 import 'package:ronet_engine/handlers/scenes_dropdown.dart';
+import 'package:ronet_engine/providers/path_providers.dart';
+import 'package:ronet_engine/providers/scenes_provider.dart';
 import 'package:ronet_engine/providers/size_provider.dart';
 
 class Editor extends StatefulWidget{
@@ -26,6 +29,14 @@ class Editor_state extends State<Editor>{
     setState(() {
       dropdown = 999;
     });
+  }
+
+  addComponent(type) async {
+    var path = Provider.of<Path_provider>(context, listen: false).path;
+    var scene = Provider.of<Scenes_provider>(context, listen: false).current_scene;
+
+    await add_component(scene, path, "component.dart", type);
+
   }
 
   @override
@@ -96,6 +107,7 @@ class Editor_state extends State<Editor>{
                     top: 35,
                     child: DropDown(methods: Component_dropdown(
                       items: const ["Пустой элемент", "Box collider", "Камера", "Sprite анимация", "Звук", "Gif эффект", "Gif фон", "Текст"],
+                      method: addComponent,
                       icons: const [Icons.question_mark, Icons.square_sharp, Icons.videocam_rounded, Icons.animation, Icons.surround_sound, Icons.gif, Icons.gif, Icons.text_format],
                     ))) : SizedBox(),
                 dropdown == 5 ? Positioned(
