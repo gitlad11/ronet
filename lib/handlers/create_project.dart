@@ -146,24 +146,24 @@ try {
   List game_state_data = await read_data(game_engine.path + r'\game_state.dart');
   List provider_data = await read_data(game_engine.path + r'\providers\game_state_provider.dart');
   List splash_data = await read_data(game_engine.path + r'\scenes\splash.dart');
-  List game_data = await read_data(game_engine.path + r'\scenes\game.dart');
+  List scene_data = await read_data(game_engine.path + r'\scenes\scene.dart');
 
   File game_state_file = File(name + r'\lib\game_state.dart');
   File provider_file = File(name + r'\lib\providers\game_state_provider.dart');
   File splash_file = File(name + r'\lib\scenes\splash.dart');
-  File game_file = File(name + r'\lib\scenes\game.dart');
+  File scene_file = File(name + r'\lib\scenes\scene.dart');
 
   await game_state_file.create(recursive: false);
   await provider_file.create(recursive: false);
   await splash_file.create(recursive: false);
-  await game_file.create(recursive: false);
+  await scene_file.create(recursive: false);
 
   print(game_state_file.path);
 
   await write_file(game_state_file, game_state_data);
   await write_file(provider_file, provider_data);
   await write_file(splash_file, splash_data);
-  await write_file(game_file, game_data);
+  await write_file(scene_file, scene_data);
   } catch(error){
   print(error);
 
