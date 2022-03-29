@@ -45,8 +45,8 @@ class Interface_column_state extends State<Interface_column>{
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: widget.width > 0.0 ? MediaQuery.of(context).size.height : widget.height,
-      width: widget.width > 0.0 ? MediaQuery.of(context).size.width : widget.width,
+      height: widget.height > 0.0 ? 600 : widget.height,
+      width: widget.width > 0.0 ? 400 : widget.width,
       padding: widget.padding_all > 0.0 ? EdgeInsets.all(widget.padding_all) :
         EdgeInsets.only(
             left: widget.padding_left,
@@ -60,7 +60,7 @@ class Interface_column_state extends State<Interface_column>{
           top: widget.margin_top,
           bottom: widget.margin_bottom),
       decoration: BoxDecoration(
-        color: widget.color.withOpacity(widget.background_opacity),
+        color: Colors.blue
       ),
       child: ListView.builder(
         itemCount: widget.items.length,

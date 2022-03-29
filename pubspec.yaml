@@ -45,6 +45,7 @@ flutter:
     - assets/background.gif
     - assets/night_city_mountain.gif
     - assets/water_fall.gif
+    - assets/flame_engine.png
 
 
   fonts:
