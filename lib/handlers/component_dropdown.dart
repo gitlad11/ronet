@@ -23,7 +23,7 @@ class Component_dropdown_state extends State<Component_dropdown>{
           itemBuilder: (BuildContext context, int index) {
 
         return TextButton(onPressed: (){
-           widget.method(index);
+           widget.method(1, index);
         }, child: Padding(
           padding: const EdgeInsets.all(6.0),
           child: Row(

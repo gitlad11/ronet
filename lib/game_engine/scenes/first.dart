@@ -1,7 +1,9 @@
+
 import 'package:flame/flame.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ronet_engine/game_engine/components/modal.dart';
+import 'package:ronet_engine/game_engine/components/text.dart';
 import 'package:window_manager/window_manager.dart';
 import 'dart:io';
 
@@ -11,6 +13,7 @@ class First extends StatefulWidget{
   String background;
   Widget children;
   var transition;
+
   First({ this.background = '', this.children = const SizedBox(), this.transition = 'blink' });
 
   @override
@@ -20,6 +23,8 @@ class First extends StatefulWidget{
 class Scene_state extends State<First>{
   bool show_modal = false;
   bool scene_appears = false;
+  String dots = ".";
+
 
   setFullScreen() async {
     if(! await WindowManager.instance.isFullScreen()){
@@ -60,11 +65,34 @@ class Scene_state extends State<First>{
     await Future.delayed(const Duration(milliseconds: 300), _time_out);
     Provider.of<Game_state_provider>(context, listen: false).set_state(scene);
   }
+
+  void update(time) async {
+    await Future.delayed(Duration(milliseconds: time), _time_out);
+    await on_dots();
+  }
+
+  on_dots() async {
+    setState(() {
+      switch(dots){
+        case ".":
+          dots = '..';
+          break;
+        case "..":
+          dots = "...";
+          break;
+        case "...":
+          dots = ".";
+          break;
+      }
+    });
+  }
+
   void _time_out(){
   }
 
   @override
   Widget build(BuildContext context) {
+    update(1500);
     return Scaffold(
       body: Container(
         width: MediaQuery.of(context).size.width,
@@ -78,51 +106,8 @@ class Scene_state extends State<First>{
           child: Stack(
             children: [
               widget.background.isNotEmpty ? Positioned.fill(child: Image.asset(widget.background,fit: BoxFit.fill)) : const SizedBox(),
-              Image.asset("assets/sparks.gif", height: 30, width: 30,),
-              Positioned(
-                bottom: 50,
-                left: 50,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: 50,
-                      padding: const EdgeInsets.all(2),
-                      width: MediaQuery.of(context).size.width - 200,
-                      decoration:  BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
-                            spreadRadius: 2,
-                            blurRadius: 4,
-                            offset: Offset(0, 3), // changes position of shadow
-                          ),
-                        ],
-                        color: Colors.black12,
-                        borderRadius: BorderRadius.circular(30)
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                              height: 46,
-                              width: 200,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                              gradient: const LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [Colors.amber, Colors.orange, Colors.deepOrange])
-                            ),
-                            ),
-                          Image.asset("assets/sparks.gif", height: 48, width: 48,),
-                        ],
-                      ),
-
-                    )
-                  ],
-                ),
+              Center(
+                child: Label(text : "Загрузка" + dots, font_size: 30, color: Colors.white, font_familly: "Gomawo"),
               ),
               show_modal ? Positioned.fill(child: Modal(on_close: on_modal_close, border_radius: 6,)) : const SizedBox()
             ],

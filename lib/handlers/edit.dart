@@ -46,7 +46,7 @@ add_component(scene, String path, String name, int type) async {
   late List component_data;
   List scene_data = await read_data(scene_file.path);
 
-  scene_data[0] = scene_data[0] + '\nimport package:flutter-project' + r"/flutter_project/lib/components/" + name;
+  scene_data[0] = scene_data[0] + '\n import "package:flutter-project' + r"/flutter_project/lib/components/" + name + '";\n' ;
 
   if(await scene_file.exists()){
     switch(type){

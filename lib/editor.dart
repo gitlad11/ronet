@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ronet_engine/components/modal.dart';
 import 'package:ronet_engine/components/navbar.dart';
 import 'package:ronet_engine/components/folders.dart';
 import 'package:ronet_engine/handlers/edit.dart';
@@ -19,6 +20,11 @@ class Editor extends StatefulWidget{
 
 class Editor_state extends State<Editor>{
   int dropdown = 999;
+  bool show_modal = false;
+  int modal = 999;
+  int component = 999;
+
+  TextEditingController controller = TextEditingController();
 
   setDropDown(index){
     setState(() {
@@ -35,7 +41,32 @@ class Editor_state extends State<Editor>{
     var path = Provider.of<Path_provider>(context, listen: false).path;
     var scene = Provider.of<Scenes_provider>(context, listen: false).current_scene;
 
-    await add_component(scene, path, "component.dart", type);
+    await add_component(scene, path, controller.text + '.dart', type);
+    on_close_modal();
+  }
+  on_show_modal(int index, int c) async {
+
+    setState(() {
+      show_modal = true;
+      component = c;
+    });
+    await Future.delayed(const Duration(milliseconds: 100), _timeout);
+    setState(() {
+      modal = index;
+    });
+  }
+
+  on_close_modal() async {
+    setState(() {
+      modal = 999;
+    });
+    await Future.delayed(const Duration(milliseconds: 500), _timeout);
+    setState(() {
+      show_modal = false;
+    });
+  }
+
+  _timeout(){
 
   }
 
@@ -107,13 +138,42 @@ class Editor_state extends State<Editor>{
                     top: 35,
                     child: DropDown(methods: Component_dropdown(
                       items: const ["Пустой элемент", "Box collider", "Камера", "Sprite анимация", "Звук", "Gif эффект", "Gif фон", "Текст"],
-                      method: addComponent,
+                      method: on_show_modal,
                       icons: const [Icons.question_mark, Icons.square_sharp, Icons.videocam_rounded, Icons.animation, Icons.surround_sound, Icons.gif, Icons.gif, Icons.text_format],
                     ))) : SizedBox(),
                 dropdown == 5 ? Positioned(
                     right: 10,
                     top: 35,
                     child: DropDown(methods: Scenes_dropdown())) : SizedBox(),
+                show_modal ? Positioned.fill(
+                    child: AnimatedOpacity(
+                      opacity: modal == 1 ? 1 : 0,
+                      duration: const Duration(milliseconds: 300),
+                      child: Modal(
+                        children: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Название", style: Theme.of(context).textTheme.titleMedium),
+                            TextField( controller: controller, ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                TextButton(onPressed: (){
+                                  if(controller.text.isNotEmpty){
+                                    addComponent(component);
+                                  }
+                                }, child: Text("Подтвердить", style: Theme.of(context).textTheme.labelLarge,)),
+                                const SizedBox(width: 20),
+                                TextButton(onPressed: (){
+                                  on_close_modal();
+                                }, child: Text("Отмена", style: Theme.of(context).textTheme.labelLarge,),)
+                              ],
+                            )
+                          ],
+                        ),
+                      )
+                    )) : const SizedBox()
               ],
             ),
           );

@@ -106,7 +106,7 @@ class _Game_state_state extends State<Game_state> {
       ], loader_color: Colors.red),
       Game(background: "assets/night_city_mountain.gif", children: interface_column1),
       Settings(background: "assets/water_fall.gif", ),
-      First(background: "assets/night_city_mountain.gif",),
+      First(background: "assets/sparks.gif", transition: "shadowing", ),
     ];
 
     return MultiProvider(
