@@ -157,6 +157,7 @@ class Create_project_state extends State<Create_project>{
       if(project['success'] == true){
         var name = project["name"];
         var flame = await Process.run("cd $name & flutter pub add flame" , [], runInShell: true);
+        var physics = await Process.run("cd $name & flutter pub add flame_forge2d" , [], runInShell: true);
         var win_utils = await Process.run("cd $name & flutter pub add window_manager" , [], runInShell: true);
         var provider = await Process.run("cd $name & flutter pub add provider" , [], runInShell: true);
         var channel = await Process.run("cd $name & flutter channel master" , [], runInShell: true);

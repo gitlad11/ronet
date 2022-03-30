@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ronet_engine/game_engine/providers/game_state_provider.dart';
+import 'package:ronet_engine/game_engine/scenes/first.dart';
+import 'package:ronet_engine/game_engine/scenes/settings.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:ronet_engine/game_engine/scenes/splash.dart';
 import 'package:ronet_engine/game_engine/scenes/game.dart';
@@ -72,19 +74,19 @@ class _Game_state_state extends State<Game_state> {
            hovered_opacity: 0.7,
            children:  Label(text: "new game", font_size: 30, font_familly: "Gomawo", stack: false, opacity: 0.8, color: Colors.white),
      ),
-    Divider(),
+    const Divider(),
             Opacity_effect(
               opacity: 1.0,
               hovered_opacity: 0.7,
               children:  Label(text: "settings", font_size: 30, font_familly: "Gomawo", stack: false, opacity: 0.8, color: Colors.white),
             ),
-            Divider(),
+          const   Divider(),
             Opacity_effect(
               opacity: 1.0,
               hovered_opacity: 0.7,
               children:  Label(text: "help", font_size: 30, font_familly: "Gomawo", stack: false, opacity: 0.8, color: Colors.white),
             ),
-    Divider(),
+    const Divider(),
             Opacity_effect(
               opacity: 1.0,
               hovered_opacity: 0.7,
@@ -102,7 +104,9 @@ class _Game_state_state extends State<Game_state> {
         "assets/dart.png",
         "assets/flame_engine.png"
       ], loader_color: Colors.red),
-      Game(background: "assets/night_city_mountain.gif", children: interface_column1)
+      Game(background: "assets/night_city_mountain.gif", children: interface_column1),
+      Settings(background: "assets/water_fall.gif", ),
+      First(background: "assets/night_city_mountain.gif",),
     ];
 
     return MultiProvider(

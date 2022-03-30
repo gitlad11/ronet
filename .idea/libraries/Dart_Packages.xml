@@ -93,6 +93,13 @@
             </list>
           </value>
         </entry>
+        <entry key="flame_forge2d">
+          <value>
+            <list>
+              <option value="$USER_HOME$/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flame_forge2d-0.8.3/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="flutter">
           <value>
             <list>
@@ -111,6 +118,13 @@
           <value>
             <list>
               <option value="$USER_HOME$/flutter/flutter/packages/flutter_test/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="forge2d">
+          <value>
+            <list>
+              <option value="$USER_HOME$/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/forge2d-0.8.2/lib" />
             </list>
           </value>
         </entry>
@@ -270,7 +284,9 @@
       <root url="file://$USER_HOME$/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/excel-2.0.0-null-safety-3/lib" />
       <root url="file://$USER_HOME$/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/fake_async-1.2.0/lib" />
       <root url="file://$USER_HOME$/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flame-1.1.0/lib" />
+      <root url="file://$USER_HOME$/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flame_forge2d-0.8.3/lib" />
       <root url="file://$USER_HOME$/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_lints-1.0.4/lib" />
+      <root url="file://$USER_HOME$/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/forge2d-0.8.2/lib" />
       <root url="file://$USER_HOME$/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/lints-1.0.1/lib" />
       <root url="file://$USER_HOME$/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/matcher-0.12.11/lib" />
       <root url="file://$USER_HOME$/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/material_color_utilities-0.1.4/lib" />
