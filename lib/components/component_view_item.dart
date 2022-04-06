@@ -29,15 +29,15 @@ class Component_view_item_state extends State<Component_view_item>{
                 Row(
                   children: [
                     const SizedBox(width: 2),
-                    Icon(Icons.crop_square, size: 22, color: Colors.white),
+                    const Icon(Icons.crop_square, size: 22, color: Colors.white),
                     const SizedBox(width: 5),
                     Text(widget.label, style: Theme.of(context).textTheme.labelLarge),
                   ],
                 ),
 
-                Row(children: [
+                Row(children: const [
                   Icon(Icons.edit, size: 19, color: Colors.white),
-                  const SizedBox(width: 5),
+                  SizedBox(width: 5),
                   Icon(Icons.delete, size: 19, color : Colors.white)
                 ],)
               ],

@@ -12,6 +12,7 @@ import 'package:ronet_engine/handlers/scenes_dropdown.dart';
 import 'package:ronet_engine/providers/path_providers.dart';
 import 'package:ronet_engine/providers/scenes_provider.dart';
 import 'package:ronet_engine/providers/size_provider.dart';
+import 'package:ronet_engine/components/game_view.dart';
 
 class Editor extends StatefulWidget{
   @override
@@ -108,7 +109,7 @@ class Editor_state extends State<Editor>{
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       crossAxisAlignment: CrossAxisAlignment.end,
                                       children: [
-                                        Container(),
+                                        Game_view(),
                                         Console()
                                       ],
                                     ),
@@ -128,11 +129,11 @@ class Editor_state extends State<Editor>{
                 dropdown == 2 ? Positioned(
                     left: 140,
                     top: 35,
-                    child: DropDown()) : SizedBox(),
+                    child: DropDown()) : const SizedBox(),
                 dropdown == 3 ? Positioned(
                     left: 220,
                     top: 35,
-                    child: DropDown()) : SizedBox(),
+                    child: DropDown()) : const SizedBox(),
                 dropdown == 4 ? Positioned(
                     right: 140,
                     top: 35,

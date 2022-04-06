@@ -61,6 +61,7 @@ class Folder_state extends State<Folder> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AnimatedContainer(
+                    clipBehavior: Clip.hardEdge,
                   duration: const Duration(milliseconds: 300),
                   height: 30,
                   width: widget.resized,
@@ -101,10 +102,12 @@ class Folder_state extends State<Folder> {
                         scrollDirection: Axis.vertical,
                         itemBuilder: (BuildContext context, int index) {
                           return Folder_item(resized: widget.resized,
+                              index: index,
                               type: folders_provider.nested_folders[widget.index][index]['type'],
                               name: folders_provider.nested_folders[widget.index][index]['name'],
                               path: folders_provider.nested_folders[widget.index][index]['path'],
-                              empty: folders_provider.nested_folders[widget.index][index]['empty'] );
+                              empty: folders_provider.nested_folders[widget.index][index]['empty']
+                              );
                         },
                       ) ,
                     ) : SizedBox(),

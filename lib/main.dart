@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ronet_engine/editor.dart';
+import 'package:ronet_engine/providers/folders_items_provider.dart';
 import 'package:ronet_engine/start.dart';
 import 'package:ronet_engine/folder_view.dart';
 import 'package:provider/provider.dart';
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => Status_provider()),
         ChangeNotifierProvider(create: (context) => Scenes_provider()),
         ChangeNotifierProvider(create: (context) => Components_provider()),
+        ChangeNotifierProvider(create: (context) => Folders_items_provider())
       ],
       child: MaterialApp(
         theme: ThemeData(
