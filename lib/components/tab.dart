@@ -32,7 +32,7 @@ class Tab_state extends State<Tab_item>{
       child: Container(
         height: 30,
         width: 200,
-        margin: const EdgeInsets.only(left: 5),
+        margin: const EdgeInsets.only(right: 5),
         alignment: Alignment.center,
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(

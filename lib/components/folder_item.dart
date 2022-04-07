@@ -35,13 +35,11 @@ class Folder_item_state extends State<Folder_item> {
   }
 
   handle_open() async {
-    List items = await init_items();
-    var open = Provider.of<Folders_items_provider>(context, listen: false).items;
-    if(open.contains(widget.index * 3)){
-      Provider.of<Folders_items_provider>(context, listen: false).setRemove(widget.index * 3);
-    } else {
-      Provider.of<Folders_items_provider>(context, listen: false).setItem(widget.index * 3, items);
-    }
+    List i = await init_items();
+    setState(() {
+      opened = !opened;
+      widget.items = i;
+    });
   }
 
   @override
@@ -79,7 +77,7 @@ class Folder_item_state extends State<Folder_item> {
                     ),
                     child: widget.type == 'directory' ? Row(
                       children: [
-                        folders.items.contains(widget.index * 3) ? const Icon(Icons.keyboard_arrow_down, size: 20,) : const Icon(Icons.keyboard_arrow_left, size: 20),
+                        opened ? const Icon(Icons.keyboard_arrow_down, size: 20,) : const Icon(Icons.keyboard_arrow_left, size: 20),
                         const SizedBox(width: 6),
                         Image.asset("assets/full_folder.png", width: 18, height: 18),
                         const SizedBox(width: 6),
@@ -95,7 +93,7 @@ class Folder_item_state extends State<Folder_item> {
                       ],
                     )
                 ),
-                folders.items.contains(widget.index * 3) ? Row(
+                opened ? Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -106,16 +104,16 @@ class Folder_item_state extends State<Folder_item> {
                       width: 300,
                       alignment: Alignment.centerLeft,
                       child: ListView.builder(
-                        itemCount: folders.nest[widget.index * 3].length,
+                        itemCount: widget.items.length,
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
                         itemBuilder: (BuildContext context, int index) {
                           return Folder_item(resized: widget.resized,
-                              type: folders.nest[widget.index * 3][index]['type'],
-                              name: folders.nest[widget.index * 3][index]['name'],
+                              type: widget.items[index]['type'],
+                              name: widget.items[index]['name'],
                               index: index + widget.index,
-                              path: folders.nest[widget.index * 3][index]['path'],
-                              empty: folders.nest[widget.index * 3][index]['empty'] );
+                              path: widget.items[index]['path'],
+                              empty: widget.items[index]['empty'] );
                         },
                       ),
                     ),

@@ -26,7 +26,6 @@ class Navbar_item_state extends State<Navbar_item>{
         child: Row(
           children: [
             TextButton(onPressed: (){
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Start()));
             }, child: Row(
               children: [
                 widget.icon != null ?

@@ -51,6 +51,13 @@ class Game_view_state extends State<Game_view>{
                     height: 30,
                     width: content_width,
                     child: Tabs()
+                ),
+                Flexible(
+                  child: Container(
+                    width: content_width,
+                    color: Colors.blueAccent,
+
+                  ),
                 )
               ],
             ),
